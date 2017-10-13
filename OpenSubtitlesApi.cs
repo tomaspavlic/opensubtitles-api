@@ -60,14 +60,14 @@ namespace Topdev.OpenSubtitles
             }
         }
 
-        public SearchSubtitles[] FindSubtitles(SearchSubtitlesMethod method, string file, string language)
+        public SearchSubtitles[] FindSubtitles(SearchMethod method, string file, string language)
         {
             switch (method)
             {
-                case SearchSubtitlesMethod.MovieHash:
+                case SearchMethod.MovieHash:
                     byte[] movieHash = MovieHasher.ComputeMovieHash(file);
                     return SearchSubtitles(MovieHasher.ToHexadecimal(movieHash), language);
-                case SearchSubtitlesMethod.Query:
+                case SearchMethod.Query:
                     return SearchSubtitles("", language, file);
                 default: return null;
             }

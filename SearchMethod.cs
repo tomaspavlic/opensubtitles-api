@@ -1,6 +1,6 @@
 namespace Topdev.OpenSubtitles
 {
-    public enum SearchSubtitlesMethod
+    public enum SearchMethod
     {
         MovieHash,
         Tag,
