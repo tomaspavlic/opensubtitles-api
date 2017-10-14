@@ -19,7 +19,7 @@ openSubtitlesApi.DownloadSubtitle(
 ### Note
 Additionally project contains XmlRpcClient.
 
-## Uage
+## Usage
 ```
 var rpcClient = new XmlRpcClient("http://some-rpc-endpoint");
 var T = rpcClient.Invoke<T>("methodName", parameters);
