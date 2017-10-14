@@ -21,7 +21,7 @@ namespace Topdev.OpenSubtitles
             _token = logIn.Token;
         }
 
-        private SearchSubtitles[] SearchSubtitles(string movieHash = "", string languages = "", string query = "")
+        private Subtitles[] SearchSubtitles(string movieHash = "", string languages = "", string query = "")
         {
             SearchSubtitlesRequest[] searchRequests = new SearchSubtitlesRequest[] {
                 new SearchSubtitlesRequest() {
@@ -41,7 +41,7 @@ namespace Topdev.OpenSubtitles
         /// <param name="url"></param>
         /// <param name="fileName"></param>
         /// <param name="subtitleExtension"></param>
-        public void DownloadSubtitle(SearchSubtitles sub, string subtitleFilePath = null)
+        public void DownloadSubtitle(Subtitles sub, string subtitleFilePath = null)
         {
             HttpClient httpClient = new HttpClient();
             Stream response = httpClient.GetStreamAsync(sub.SubDownloadLink).Result;
@@ -60,7 +60,7 @@ namespace Topdev.OpenSubtitles
             }
         }
 
-        public SearchSubtitles[] FindSubtitles(SearchMethod method, string file, string language)
+        public Subtitles[] FindSubtitles(SearchMethod method, string file, string language)
         {
             switch (method)
             {

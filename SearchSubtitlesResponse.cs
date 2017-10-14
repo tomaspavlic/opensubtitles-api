@@ -8,6 +8,6 @@ namespace Topdev.OpenSubtitles
         public string Status { get; set; }
 
         [DataMember(Name = "data")]
-        public SearchSubtitles[] Data { get; set; }
+        public Subtitles[] Data { get; set; }
     }
 }

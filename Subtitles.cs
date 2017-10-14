@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 namespace Topdev.OpenSubtitles
 {
     [DataContract]
-    public class SearchSubtitles
+    public class Subtitles
     {
         public string MatchedBy { get; set; }
         public string IDSubMovieFile { get; set; }
