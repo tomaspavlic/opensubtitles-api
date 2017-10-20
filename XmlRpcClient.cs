@@ -105,7 +105,7 @@ namespace Topdev.OpenSubtitles
                 {
                     case "string": prop.SetValue(o, valueChild.Value); break;
                     case "int": prop.SetValue(o, Int32.Parse(valueChild.Value)); break;
-                    case "double": prop.SetValue(o, Double.Parse(valueChild.Value)); break;
+                    case "double": prop.SetValue(o, Double.Parse(valueChild.Value, System.Globalization.CultureInfo.InvariantCulture)); break;
                     case "struct": prop.SetValue(o, DeserializeStruct(valueChild, prop.PropertyType)); break;
                     case "array": prop.SetValue(o, DeserializeArray(valueChild, prop.PropertyType)); break;
                 }
