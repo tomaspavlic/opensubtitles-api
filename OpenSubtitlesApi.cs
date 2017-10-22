@@ -21,13 +21,20 @@ namespace Topdev.OpenSubtitles
             _token = logIn.Token;
         }
 
-        private Subtitles[] SearchSubtitles(string movieHash = "", string languages = "", string query = "")
+        private Subtitles[] SearchSubtitles(
+            string languages, 
+            string movieHash = "",  
+            string query = "", 
+            string imdbId = "", 
+            string tag = "")
         {
             SearchSubtitlesRequest[] searchRequests = new SearchSubtitlesRequest[] {
                 new SearchSubtitlesRequest() {
                     SublanguageId = languages,
                     MovieHash = movieHash,
-                    Query = query }
+                    Query = query,
+                    IMDBId = imdbId,
+                    Tag = tag }
             };
 
             SearchSubtitlesResponse search = _rcpClient.Invoke<SearchSubtitlesResponse>("SearchSubtitles", _token, searchRequests);
@@ -60,15 +67,19 @@ namespace Topdev.OpenSubtitles
             }
         }
 
-        public Subtitles[] FindSubtitles(SearchMethod method, string file, string language)
+        public Subtitles[] FindSubtitles(SearchMethod method, string searchValue, string language)
         {
             switch (method)
             {
                 case SearchMethod.MovieHash:
-                    byte[] movieHash = MovieHasher.ComputeMovieHash(file);
-                    return SearchSubtitles(MovieHasher.ToHexadecimal(movieHash), language);
+                    byte[] movieHash = MovieHasher.ComputeMovieHash(searchValue);
+                    return SearchSubtitles(language, MovieHasher.ToHexadecimal(movieHash));
                 case SearchMethod.Query:
-                    return SearchSubtitles("", language, file);
+                    return SearchSubtitles(language, string.Empty, searchValue);
+                case SearchMethod.IMDBId:
+                    return SearchSubtitles(language, string.Empty, string.Empty, searchValue);
+                case SearchMethod.Tag:
+                    return SearchSubtitles(language, string.Empty, string.Empty, string.Empty, searchValue);
                 default: return null;
             }
         }

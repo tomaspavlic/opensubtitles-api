@@ -16,5 +16,11 @@ namespace Topdev.OpenSubtitles
 
         [DataMember(Name = "query")]
         public string Query { get; set; }
+        
+        [DataMember(Name = "imdbid")]
+        public string IMDBId { get; set; }
+        
+        [DataMember(Name = "tag")]
+        public string Tag { get; set; }
     }
 }
