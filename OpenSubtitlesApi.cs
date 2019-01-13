@@ -37,6 +37,9 @@ namespace Topdev.OpenSubtitles
                     Tag = tag }
             };
 
+            if (_token == null)
+                throw new Exception("You are not logged in.");
+
             SearchSubtitlesResponse search = _rcpClient.Invoke<SearchSubtitlesResponse>("SearchSubtitles", _token, searchRequests);
 
             return search.Data;
