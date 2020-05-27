@@ -2,14 +2,14 @@ using System;
 using System.IO;
 using System.Text;
 
-namespace Topdev.OpenSubtitles
+namespace Topdev.OpenSubtitles.Client
 {
     public static class MovieHasher
     {
         public static byte[] ComputeMovieHash(string filename)
         {
             byte[] result;
-            using (Stream input = File.OpenRead(filename))
+            using (var input = File.OpenRead(filename))
             {
                 result = ComputeMovieHash(input);
             }
@@ -22,8 +22,8 @@ namespace Topdev.OpenSubtitles
             streamsize = input.Length;
             lhash = streamsize;
 
-            long i = 0;
-            byte[] buffer = new byte[sizeof(long)];
+            var i = 0L;
+            var buffer = new byte[sizeof(long)];
             while (i < 65536 / sizeof(long) && (input.Read(buffer, 0, sizeof(long)) > 0))
             {
                 i++;
@@ -38,14 +38,15 @@ namespace Topdev.OpenSubtitles
                 lhash += BitConverter.ToInt64(buffer, 0);
             }
             input.Dispose();
-            byte[] result = BitConverter.GetBytes(lhash);
+            var result = BitConverter.GetBytes(lhash);
             Array.Reverse(result);
+
             return result;
         }
 
         public static string ToHexadecimal(byte[] bytes)
         {
-            StringBuilder hexBuilder = new StringBuilder();
+            var hexBuilder = new StringBuilder();
             for (int i = 0; i < bytes.Length; i++)
             {
                 hexBuilder.Append(bytes[i].ToString("x2"));

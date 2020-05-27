@@ -3,21 +3,21 @@ using System.IO;
 using System.IO.Compression;
 using System.Net.Http;
 
-namespace Topdev.OpenSubtitles
+namespace Topdev.OpenSubtitles.Client
 {
-    public class OpenSubtitlesApi
+    public class OpenSubtitlesClient
     {
-        private XmlRpcClient _rcpClient;
+        private readonly XmlRpcClient _rcpClient;
         private string _token;
 
-        public OpenSubtitlesApi()
+        public OpenSubtitlesClient()
         {
             _rcpClient = new XmlRpcClient("http://api.opensubtitles.org:80/xml-rpc");
         }
 
         public void LogIn(string language, string agent)
         {
-            LogInResponse logIn = _rcpClient.Invoke<LogInResponse>("LogIn", string.Empty, string.Empty, language, agent);
+            var logIn = _rcpClient.Invoke<LogInResponse>("LogIn", string.Empty, string.Empty, language, agent);
             _token = logIn.Token;
         }
 
@@ -28,7 +28,7 @@ namespace Topdev.OpenSubtitles
             string imdbId = "", 
             string tag = "")
         {
-            SearchSubtitlesRequest[] searchRequests = new SearchSubtitlesRequest[] {
+            var searchRequests = new SearchSubtitlesRequest[] {
                 new SearchSubtitlesRequest() {
                     SublanguageId = languages,
                     MovieHash = movieHash,
@@ -40,7 +40,7 @@ namespace Topdev.OpenSubtitles
             if (_token == null)
                 throw new Exception("You are not logged in.");
 
-            SearchSubtitlesResponse search = _rcpClient.Invoke<SearchSubtitlesResponse>("SearchSubtitles", _token, searchRequests);
+            var search = _rcpClient.Invoke<SearchSubtitlesResponse>("SearchSubtitles", _token, searchRequests);
 
             return search.Data;
         }
@@ -53,12 +53,13 @@ namespace Topdev.OpenSubtitles
         /// <param name="subtitleExtension"></param>
         public void DownloadSubtitle(Subtitles sub, string subtitleFilePath = null)
         {
-            HttpClient httpClient = new HttpClient();
-            Stream response = httpClient.GetStreamAsync(sub.SubDownloadLink).Result;
+            var httpClient = new HttpClient();
+            var response = httpClient.GetStreamAsync(sub.SubDownloadLink).Result;
+
             try
             {
-                using (FileStream fs = new FileStream(subtitleFilePath ?? sub.SubFileName, FileMode.Create, FileAccess.Write))
-                using (GZipStream gzip = new GZipStream(response, CompressionMode.Decompress))
+                using (var fs = new FileStream(subtitleFilePath ?? sub.SubFileName, FileMode.Create, FileAccess.Write))
+                using (var gzip = new GZipStream(response, CompressionMode.Decompress))
                 {
                     gzip.CopyTo(fs);
                     gzip.Flush();
@@ -75,7 +76,7 @@ namespace Topdev.OpenSubtitles
             switch (method)
             {
                 case SearchMethod.MovieHash:
-                    byte[] movieHash = MovieHasher.ComputeMovieHash(searchValue);
+                    var movieHash = MovieHasher.ComputeMovieHash(searchValue);
                     return SearchSubtitles(language, MovieHasher.ToHexadecimal(movieHash));
                 case SearchMethod.Query:
                     return SearchSubtitles(language, string.Empty, searchValue);

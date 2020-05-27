@@ -1,4 +1,4 @@
-namespace Topdev.OpenSubtitles
+namespace Topdev.OpenSubtitles.Client
 {
     public enum SearchMethod
     {

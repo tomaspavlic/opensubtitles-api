@@ -1,6 +1,6 @@
 using System.Runtime.Serialization;
 
-namespace Topdev.OpenSubtitles
+namespace Topdev.OpenSubtitles.Client
 {
     [DataContract]
     public class Subtitles

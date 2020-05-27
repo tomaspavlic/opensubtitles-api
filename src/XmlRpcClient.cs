@@ -8,11 +8,11 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Xml.Linq;
 
-namespace Topdev.OpenSubtitles
+namespace Topdev.OpenSubtitles.Client
 {
     public class XmlRpcClient
     {
-        private HttpClient _httpClient = new HttpClient();
+        private readonly HttpClient _httpClient = new HttpClient();
         private readonly string _xmlRpcEndpointURL;
 
         public XmlRpcClient(string xmlRpcEndpointURL)
@@ -22,24 +22,24 @@ namespace Topdev.OpenSubtitles
 
         public T Invoke<T>(string methodName, params object[] parameters)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             sb.Append("<methodCall>");
             sb.Append($"<methodName>{methodName}</methodName>");
 
             sb.Append("<params>");
-            foreach (object obj in parameters)
+            foreach (var obj in parameters)
             {
                 sb.Append(SerializeParameter(obj));
             }
             sb.Append("</params></methodCall>");
 
-            StringContent content = new StringContent(sb.ToString());
+            var content = new StringContent(sb.ToString());
 
-            HttpResponseMessage response = _httpClient.PostAsync(_xmlRpcEndpointURL, content).Result;
+            var response = _httpClient.PostAsync(_xmlRpcEndpointURL, content).Result;
             if (response.IsSuccessStatusCode)
             {
-                string responseString = response.Content.ReadAsStringAsync().Result;
-                T o = DeserializeResponse<T>(responseString);
+                var responseString = response.Content.ReadAsStringAsync().Result;
+                var o = DeserializeResponse<T>(responseString);
                 return o;
             }
             else
@@ -50,9 +50,9 @@ namespace Topdev.OpenSubtitles
 
         private T DeserializeResponse<T>(string response)
         {
-            XElement xmlElement = XElement.Load(new StringReader(response));
+            var xmlElement = XElement.Load(new StringReader(response));
 
-            XElement value = xmlElement.Element("params")
+            var value = xmlElement.Element("params")
                 .Element("param")
                 .Element("value")
                 .Elements()
@@ -80,16 +80,16 @@ namespace Topdev.OpenSubtitles
 
         private object DeserializeStruct(XElement structElement, Type type)
         {
-            IEnumerable<XElement> members = structElement.Elements("member");
-            PropertyInfo[] props = type.GetProperties();
-            object o = Activator.CreateInstance(type);
+            var members = structElement.Elements("member");
+            var props = type.GetProperties();
+            var o = Activator.CreateInstance(type);
 
             foreach (XElement member in members)
             {
-                string memberName = member.Element("name").Value;
-                XElement memberValue = member.Element("value");
-                XElement valueChild = memberValue.Elements().First();
-                string valueType = valueChild.Name.LocalName;
+                var memberName = member.Element("name").Value;
+                var memberValue = member.Element("value");
+                var valueChild = memberValue.Elements().First();
+                var valueType = valueChild.Name.LocalName;
 
                 PropertyInfo prop;
 
@@ -116,13 +116,13 @@ namespace Topdev.OpenSubtitles
 
         private object DeserializeArray(XElement arrayElement, Type type)
         {
-            List<XElement> arrayValues = arrayElement.Element("data").Elements("value").ToList();
-            Type arrayItemType = type.GetElementType();
-            Array array = Array.CreateInstance(arrayItemType, arrayValues.Count);
+            var arrayValues = arrayElement.Element("data").Elements("value").ToList();
+            var arrayItemType = type.GetElementType();
+            var array = Array.CreateInstance(arrayItemType, arrayValues.Count);
 
             for (int i = 0; i < arrayValues.Count; i++)
             {
-                object arrayValur = ValueElement(arrayValues[i].Elements().First(), arrayItemType);
+                var arrayValur = ValueElement(arrayValues[i].Elements().First(), arrayItemType);
                 array.SetValue(arrayValur, i);
             }
 
@@ -133,12 +133,12 @@ namespace Topdev.OpenSubtitles
         {
             if (o.GetType().Namespace.StartsWith("System"))
             {
-                string element = GetTypeElement(o.GetType());
+                var element = GetTypeElement(o.GetType());
                 return $"<{element}>{o.ToString()}</{element}>";
             }
             else if (o.GetType().IsArray)
             {
-                string arrayString = "<array><data>";
+                var arrayString = "<array><data>";
                 foreach (object x in (IEnumerable<object>)o)
                 {
                     arrayString += "<value>";
@@ -151,7 +151,6 @@ namespace Topdev.OpenSubtitles
             }
             else
             {
-
                 return SerializeComplexParameter(o);
             }
         }
@@ -173,15 +172,15 @@ namespace Topdev.OpenSubtitles
 
         private string SerializeComplexParameter(object obj)
         {
-            Type type = obj.GetType();
-            PropertyInfo[] props = type.GetProperties();
-            string str = "<struct>";
+            var type = obj.GetType();
+            var props = type.GetProperties();
+            var str = "<struct>";
 
             foreach (PropertyInfo prop in props)
             {
                 str += "<member>";
-                Attribute attr = prop.GetCustomAttribute(typeof(DataMemberAttribute), true);
-                string propertyName = attr == null ? prop.Name : ((DataMemberAttribute)attr).Name;
+                var attr = prop.GetCustomAttribute(typeof(DataMemberAttribute), true);
+                var propertyName = attr == null ? prop.Name : ((DataMemberAttribute)attr).Name;
                 str += "<name>" + propertyName + "</name>";
                 str += "<value>" + SerializeValue(prop.GetValue(obj, null)) + "</value>";
                 str += "</member>";
