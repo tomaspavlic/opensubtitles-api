@@ -54,10 +54,10 @@ namespace Topdev.OpenSubtitles.Client
         /// <param name="url"></param>
         /// <param name="fileName"></param>
         /// <param name="subtitleExtension"></param>
-        public void DownloadSubtitle(Subtitles sub, string subtitleFilePath = null)
+        public async Task DownloadSubtitleAsync(Subtitles sub, string subtitleFilePath = null)
         {
             var httpClient = new HttpClient();
-            var response = httpClient.GetStreamAsync(sub.SubDownloadLink).Result;
+            var response = await httpClient.GetStreamAsync(sub.SubDownloadLink);
 
             try
             {
