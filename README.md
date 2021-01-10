@@ -16,19 +16,17 @@ Install-Package Topdev.OpenSubtitles.Client
 ```
 
 ## Usage
-```
+```csharp
 var openSubtitlesApi = new OpenSubtitlesApi();
 
-openSubtitlesApi.LogIn("eng", "OSTestUserAgentTemp");
+await openSubtitlesApi.LogInAsync("eng", "OSTestUserAgentTemp", "username", "password");
 
-var subtitles = openSubtitlesApi.FindSubtitles(
+var subtitles = await openSubtitlesApi.FindSubtitlesAsync(
     SearchMethod.Qeury,
     "Game of thrones s01e01",
     "eng");
 
-openSubtitlesApi.DownloadSubtitle(
-    subtitles[0],
-    null);
+await openSubtitlesApi.DownloadSubtitleAsync(subtitles[0], null);
 ```
 
 ## XmlRpcClient
@@ -37,7 +35,7 @@ Additionally project contains XmlRpcClient.
 
 ```
 var rpcClient = new XmlRpcClient("http://some-rpc-endpoint");
-var T = rpcClient.Invoke<T>("methodName", parameters);
+var T = await rpcClient.InvokeAsync<T>("methodName", parameters);
 ```
 
 ## Donations
