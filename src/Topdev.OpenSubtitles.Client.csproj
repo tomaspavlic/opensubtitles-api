@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <PackageId>Topdev.OpenSubtitles.Client</PackageId>
-    <Version>1.0.2</Version>
+    <Version>1.1.0</Version>
     <Authors>Tomáš Pavlič</Authors>
     <Company>Topdev</Company>
     <IsPackable>true</IsPackable>
