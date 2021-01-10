@@ -1,5 +1,4 @@
 using System.IO;
-using Topdev.OpenSubtitles.Client;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Text;
 

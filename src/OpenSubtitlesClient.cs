@@ -2,9 +2,12 @@ using System;
 using System.IO;
 using System.IO.Compression;
 using System.Net.Http;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 
+[assembly: InternalsVisibleTo("Topdev.OpenSubtitles.Client.Tests")]
 namespace Topdev.OpenSubtitles.Client
-{
+{    
     public class OpenSubtitlesClient
     {
         private readonly XmlRpcClient _rcpClient;
@@ -15,13 +18,13 @@ namespace Topdev.OpenSubtitles.Client
             _rcpClient = new XmlRpcClient("http://api.opensubtitles.org:80/xml-rpc");
         }
 
-        public void LogIn(string language, string agent)
+        public async Task LogInAsync(string language, string agent, string username, string password)
         {
-            var logIn = _rcpClient.Invoke<LogInResponse>("LogIn", string.Empty, string.Empty, language, agent);
+            var logIn = await _rcpClient.InvokeAsync<LogInResponse>("LogIn", username, password, language, agent);
             _token = logIn.Token;
         }
 
-        private Subtitles[] SearchSubtitles(
+        internal async Task<Subtitles[]> SearchSubtitlesAsync(
             string languages, 
             string movieHash = "",  
             string query = "", 
@@ -40,7 +43,7 @@ namespace Topdev.OpenSubtitles.Client
             if (_token == null)
                 throw new Exception("You are not logged in.");
 
-            var search = _rcpClient.Invoke<SearchSubtitlesResponse>("SearchSubtitles", _token, searchRequests);
+            var search = await _rcpClient.InvokeAsync<SearchSubtitlesResponse>("SearchSubtitles", _token, searchRequests);
 
             return search.Data;
         }
@@ -71,19 +74,19 @@ namespace Topdev.OpenSubtitles.Client
             }
         }
 
-        public Subtitles[] FindSubtitles(SearchMethod method, string searchValue, string language)
+        public Task<Subtitles[]> FindSubtitlesAsync(SearchMethod method, string searchValue, string language)
         {
             switch (method)
             {
                 case SearchMethod.MovieHash:
                     var movieHash = MovieHasher.ComputeMovieHash(searchValue);
-                    return SearchSubtitles(language, MovieHasher.ToHexadecimal(movieHash));
+                    return SearchSubtitlesAsync(language, MovieHasher.ToHexadecimal(movieHash));
                 case SearchMethod.Query:
-                    return SearchSubtitles(language, string.Empty, searchValue);
+                    return SearchSubtitlesAsync(language, string.Empty, searchValue);
                 case SearchMethod.IMDBId:
-                    return SearchSubtitles(language, string.Empty, string.Empty, searchValue);
+                    return SearchSubtitlesAsync(language, string.Empty, string.Empty, searchValue);
                 case SearchMethod.Tag:
-                    return SearchSubtitles(language, string.Empty, string.Empty, string.Empty, searchValue);
+                    return SearchSubtitlesAsync(language, string.Empty, string.Empty, string.Empty, searchValue);
                 default: return null;
             }
         }
