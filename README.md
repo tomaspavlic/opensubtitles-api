@@ -33,7 +33,7 @@ await openSubtitlesApi.DownloadSubtitleAsync(subtitles[0], null);
 
 Additionally project contains XmlRpcClient.
 
-```
+```csharp
 var rpcClient = new XmlRpcClient("http://some-rpc-endpoint");
 var T = await rpcClient.InvokeAsync<T>("methodName", parameters);
 ```
