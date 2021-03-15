@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>Topdev.OpenSubtitles.Client</PackageId>
-    <Version>1.2.0</Version>
+    <Version>1.3.0</Version>
     <Authors>Tomáš Pavlič</Authors>
     <Company>Topdev</Company>
     <IsPackable>true</IsPackable>
@@ -11,6 +11,7 @@
     <RepositoryUrl>https://github.com/tomaspavlic/opensubtitles-api</RepositoryUrl>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
 </Project>
